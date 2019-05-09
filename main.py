@@ -39,7 +39,7 @@ def new_post():
             new_post = Blog(post_title, post_content)
             db.session.add(new_post)
             db.session.commit()
-            return redirect('/blog')
+            return redirect('/single-post')
 
     posts = Blog.query.all()
 
@@ -52,9 +52,25 @@ def new_post():
 @app.route('/blog')
 def blog():
 
+    blog_id = request.args.get('id')
+
     posts = Blog.query.all()
+
+
+    if blog_id:
+        for post in posts:
+            if int(blog_id) == post.id:
+                return render_template('single_post.html', post=post)
+
     return render_template('blog.html', title="Blog Posts", posts=posts)
 
+
+
+@app.route('/single-post', methods=['POST', 'GET'])
+def single_post():
+
+    posts = Blog.query.order_by(Blog.id.desc())
+    return render_template('single_post.html', title="New Post", post=posts[0])
 
 if __name__ =='__main__':
     app.run()

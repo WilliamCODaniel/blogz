@@ -9,10 +9,8 @@
     <h2>My Blog Posts</h2>
     <ul>
         {% for post in posts %}
-            <li>
-                <h2>{{post.name}}</h2>
-                {{post.post}}
-                <hr />
+            <li >
+                <a href="/blog?id={{post.id}}">{{post.name}}</a>
             </li>
         {% endfor %}
     </ul>
