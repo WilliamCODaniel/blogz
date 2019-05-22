@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
+from hashutils import make_pw_hash, check_pw_hash, make_salt
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -16,6 +17,17 @@ class Blog(db.Model):
     def __init__(self, name, content):
         self.name = name
         self.post = content
+
+class User(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120))
+    pw_hash = db.Column(db.String(120))
+    blogs = db.relationship('Blog', backref='owner')
+
+    def __init__(self, email, password):
+        self.email = email
+        self.pw_hash = make_pw_hash(password)
 
 #@app.route('/')
 #def index():
