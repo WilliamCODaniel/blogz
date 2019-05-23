@@ -44,6 +44,7 @@ def index():
         for user in users:
             if int(user_id) == user.id:
                 return render_template('index.html', user=user)
+    return render_template('index.html', title="Users", users=users)
 
 @app.before_request
 def require_login():
