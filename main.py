@@ -37,13 +37,16 @@ class User(db.Model):
 def index():
 
     user_id = request.args.get('id')
+    blog_id = request.args.get('owner_id')
 
+    
     users = User.query.all()
-
+    
     if user_id:
         for user in users:
             if int(user_id) == user.id:
-                return render_template('index.html', user=user)
+                #return redirect ('/blog')
+                return render_template('singleUser.html', user=user)
     return render_template('index.html', title="Users", users=users)
 
 @app.before_request
@@ -209,7 +212,6 @@ def blog():
     blog_id = request.args.get('id')
 
     posts = Blog.query.all()
-
 
     if blog_id:
         for post in posts:
