@@ -17,9 +17,9 @@ class Blog(db.Model):
     post = db.Column(db.Text)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, name, content, owner):
+    def __init__(self, name, post, owner):
         self.name = name
-        self.post = content
+        self.post = post
         self.owner = owner
 
 class User(db.Model):
@@ -35,19 +35,21 @@ class User(db.Model):
 
 @app.route('/')
 def index():
-
-    user_id = request.args.get('id')
-    blog_id = request.args.get('owner_id')
-
-    
     users = User.query.all()
+
+    return render_template('index.html', users=users)
+    # user_id = request.args.get('id')
+    # blog_id = request.args.get('owner_id')
+
     
-    if user_id:
-        for user in users:
-            if int(user_id) == user.id:
-                #return redirect ('/blog')
-                return render_template('singleUser.html', user=user)
-    return render_template('index.html', title="Users", users=users)
+    # users = User.query.all()
+    
+    # if user_id:
+    #     for user in users:
+    #         if int(user_id) == user.id:
+    #             #return redirect ('/blog')
+    #             return render_template('singleUser.html', user=user)
+    # return render_template('index.html', title="Users", users=users)
 
 @app.before_request
 def require_login():
@@ -185,7 +187,7 @@ def new_post():
     content_error = ''
     if request.method == 'POST':
         post_title = request.form['title']
-        post_content = request.form['content']
+        post_content = request.form['post']
         if not post_title:
             title_error = 'No Title entered'
             post_title = ''      
@@ -209,17 +211,19 @@ def new_post():
 @app.route('/blog')
 def blog():
 
-    blog_id = request.args.get('id')
-
-    posts = Blog.query.all()
-
-    if blog_id:
-        for post in posts:
-            if int(blog_id) == post.id:
-                return render_template('single_post.html', post=post)
-
-    return render_template('blog.html', title="Blog Posts", posts=posts)
-
+    if 'user' in request.args:
+        user_id = request.args.getlist('user')
+        user = User.query.get(user_id)
+        user_blogs = Blog.query.filter_by(owner=user).all()
+        return render_template('singleUser.html', user_blogs=user_blogs)
+    
+    single_post = request.args.get('id')
+    if single_post:
+        post = Blog.query.get(single_post)
+        return render_template('post.html', post=post)
+    else:
+        posts = Blog.query.all()
+        return render_template('blog.html', posts=posts)
 
 
 @app.route('/single-post', methods=['POST', 'GET'])
