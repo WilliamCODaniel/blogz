@@ -220,7 +220,7 @@ def blog():
     single_post = request.args.get('id')
     if single_post:
         post = Blog.query.get(single_post)
-        return render_template('post.html', post=post)
+        return render_template('single_post.html', post=post)
     else:
         posts = Blog.query.all()
         return render_template('blog.html', posts=posts)
