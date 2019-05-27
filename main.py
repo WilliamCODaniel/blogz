@@ -38,19 +38,7 @@ def index():
     users = User.query.all()
 
     return render_template('index.html', users=users)
-    # user_id = request.args.get('id')
-    # blog_id = request.args.get('owner_id')
-
     
-    # users = User.query.all()
-    
-    # if user_id:
-    #     for user in users:
-    #         if int(user_id) == user.id:
-    #             #return redirect ('/blog')
-    #             return render_template('singleUser.html', user=user)
-    # return render_template('index.html', title="Users", users=users)
-
 @app.before_request
 def require_login():
     allowed_routes = ['login', 'user_signup', 'blog', 'index']
